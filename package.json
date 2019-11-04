@@ -1,8 +1,8 @@
 {
-  "name": "productsapp",
+  "name": "lab3",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -15,5 +15,10 @@
   "bugs": {
     "url": "https://github.com/xdong82/se3316-xdong82-lab3/issues"
   },
-  "homepage": "https://github.com/xdong82/se3316-xdong82-lab3#readme"
+  "homepage": "https://github.com/xdong82/se3316-xdong82-lab3#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.7.7"
+  }
 }

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>SE 3316 - Lab 3</title>
+<meta charset="UTF-8">
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+<script>
+function getAllItems(){
+    var items = document.getElementById('available-items');
+
+    $.get("/library/itemList", function(data) {
+        console.log( data );
+        for (var item in data) {
+            console.log(item);
+            items.appendChild(createBook(item.name, item.loan_period));
+            
+        }
+    });
+
+
+
+}
+
+function createBook(name, dueDate){
+    var item = document.createElement('li');
+    var text = document.createElement('p');
+    var altText = document.createElement('p');
+    var due = document.createElement('p');
+
+    item.className= "item-book"
+    text.textContent = name;
+    due.textContent = 'Due in ' + dueDate + ' Days';
+
+    item.appendChild(text);
+    item.appendChild(altText);
+    item.appendChild(due);
+    return item;
+}
+</script>
+</head>
+
+
+<body>
+    <input type="button" value="Create Item" onclick="">
+    <input type="button" value="Update Item" onclick="">
+    <input type="button" value="Delete Item" onclick="">
+    <input type="button" value="Get All Items" onclick="getAllItems()">
+    <input type="button" value="Item Info" onclick="">
+
+    <select data-placeholder="Choose a Language..." id='language' onclick="translateAll(language)">
+        <option value='FR'>French</option>
+        <option value="AR">Arabic</option>
+        <option value="ZH">Chinese (Mandarin)</option>
+        <option value="HI">Hindi</option>n>      
+    </select>
+
+
+
+
+    <h1>Library Checkout</h1>
+    <h2>Items Available:</h2>
+    <ol id="available-items">
+
+
+    </ol>
+    <h2>Checkout List:</h2>
+    <ol id="basket"></ol>
+
+    <div id="admin">
+
+    </div>
+</body>
+</html>
