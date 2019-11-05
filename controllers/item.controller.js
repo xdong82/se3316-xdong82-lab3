@@ -27,7 +27,7 @@ exports.item_create = function (req, res, next) {
 exports.item_details = function (req, res, next) {
     Item.findById(req.params.id, function (err, item) {
         if (err) return next(err);
-        res.send(item);
+        res.json(item);
     })
 };
 
@@ -35,23 +35,19 @@ exports.item_details = function (req, res, next) {
 exports.all_item_details = function (req, res, next) {
     //res.send('Greetings from the itemList controller!');
     Item.find({}, function(err, items) {
-        var itemMap = {};
-    
-        items.forEach(function(item) {
-          itemMap[item._id] = item;
-        });
-
-    
-        res.send(itemMap);  
+        res.json(items);  
       });
 };
 
 
 
 exports.item_update = function (req, res, next) {
-    Item.findByIdAndUpdate(req.params.id, {$set: req.body}, function (err, item) {
+    Item.findByIdAndUpdate(req.params.id, {$set: {loan_period: req.body.loan_period}}, function (err, item) {
+        console.log(req.body.loan_period);
+        console.log(req.params.id);               
+
         if (err) return next(err);
-        res.send('Item udpated.');
+        res.send('Item updated.');
     });
 };
 
@@ -62,10 +58,12 @@ exports.item_delete = function (req, res, next) {
     })
 };
 
-exports.name_select = function (req, res, next){
-    Item.find({"name": req.body.name}, function(err, item){
-        if(err) return next(err);
-        res.send(item)
-    })
-}
+
+exports.name_select = function (req, res, next) {
+    //res.send('Greetings from the itemList controller!');
+    Item.find({name: req.query.name}, function(err, items) {
+        console.log(items);
+        res.json(items);  
+      });
+};
 

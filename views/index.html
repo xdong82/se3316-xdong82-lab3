@@ -3,49 +3,134 @@
 <head>
 <title>SE 3316 - Lab 3</title>
 <meta charset="UTF-8">
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 <script>
-function getAllItems(){
-    var items = document.getElementById('available-items');
+    function getAllItems(){
+        var items = document.getElementById('available-items');
 
-    $.get("/library/itemList", function(data) {
-        console.log( data );
-        for (var item in data) {
-            console.log(item);
-            items.appendChild(createBook(item.name, item.loan_period));
-            
+        $.get("/library/itemList", function(data) {
+            console.log( data );
+            while (items.firstChild) {
+                items.removeChild(items.firstChild);
+            }
+            for (var key in data) {
+                var val = data[key];
+                console.log(val);
+                var dbParam = JSON.stringify(val);
+                var item = document.createElement('ul');
+                item.textContent = dbParam;
+                items.appendChild(item);
+
+            }
+
+        });
+    }
+
+    function createItem(){
+        var name = prompt("Please Enter the name of the Item ", );
+        if (name == null) {
+            return false;
+        } else {
+            console.log(true);
+            var type = prompt("Is the item a book or cd?(book/cd) ", );
+            if(type == null){
+                return false;
+            } else{
+                console.log(true);
+                var due = prompt("What is the loan period of the item? If the item does not have a due date, please leave blank", )
+                if(due == null){
+
+                } else{
+                    $.post("/library/create",{
+                        name: name,
+                        type: type,
+                        loan_period: due
+                    }, function(data, status){
+                            console.log(true);
+                    })
+                }
+            }
         }
-    });
+    }
 
+    function getItemInfo(){
+        var items = document.getElementById('available-items')
+        var name = prompt("Please Enter Name of Item you want", );
+        if(name == null){
+            return false;
+        }else{
+            console.log(true);
+            $.get("/library/name_select", {
+                name:name
+            },
+                function(data, status) {
+                    while (items.firstChild) {
+                        items.removeChild(items.firstChild);
+                    }
+                    console.log(true);
+                    console.log(status);
+                    console.log( data );
+                    for (var key in data) {
+                        var val = data[key];
+                        console.log(val);
+                        var dbParam = JSON.stringify(val);
+                        var item = document.createElement('ul');
+                        item.textContent = dbParam;
+                        items.appendChild(item);
+                    }
+                }
+            );
+        }
+    }
 
+    function deleteItem(){
+        var id = prompt("Please Enter id of the Item you want to delete", );
+        if(name == null){
+            return false;
+        }else{
+            $.ajax({
+                url: '/library/'+id+'/delete',
+                type: 'DELETE',
+                success: function(result) {
+                    console.log(result);
+                }
+            });
+        }
+    }
 
-}
+    function updateItem(){
+        var id = prompt("Please Enter the id of the Item ", );
+        if (id == null) {
+            return false;
+        } else {
+            console.log(true);
+            var due = prompt("What is the loan period of the item? ", );
+            if(due == null){
+                return false;
+            } else{
+                $.ajax({
+                    url: '/library/'+id+'/update',
+                    type: 'PUT',
+                    data: {loan_period: due},
+                    success: function(result) {
+                        console.log(result);
+                    }
+                });
+            }
+        }
+    }
+    
 
-function createBook(name, dueDate){
-    var item = document.createElement('li');
-    var text = document.createElement('p');
-    var altText = document.createElement('p');
-    var due = document.createElement('p');
-
-    item.className= "item-book"
-    text.textContent = name;
-    due.textContent = 'Due in ' + dueDate + ' Days';
-
-    item.appendChild(text);
-    item.appendChild(altText);
-    item.appendChild(due);
-    return item;
-}
-</script>
+   
+    </script>
 </head>
 
-
 <body>
-    <input type="button" value="Create Item" onclick="">
-    <input type="button" value="Update Item" onclick="">
-    <input type="button" value="Delete Item" onclick="">
+    <input type="button" value="Create Item" onclick="createItem()">
+    <input type="button" value="Update Item" onclick="updateItem()">
+    <input type="button" value="Delete Item" onclick="deleteItem()">
     <input type="button" value="Get All Items" onclick="getAllItems()">
-    <input type="button" value="Item Info" onclick="">
+    <input type="button" value="Item Info" onclick="getItemInfo()">
 
     <select data-placeholder="Choose a Language..." id='language' onclick="translateAll(language)">
         <option value='FR'>French</option>
